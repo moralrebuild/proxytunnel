@@ -34,7 +34,7 @@ OPTFLAGS += -DSO_REUSEPORT
 
 # SOLARIS
 #LDFLAGS += -lsocket -lnsl
-#LDFLAGS += -L/usr/local/ssl/lib	# Path to your SSL lib dir
+#LDFLAGS += -L/usr/ssl/lib	# Path to your SSL lib dir
 
 # END system dependant block
 
@@ -47,7 +47,7 @@ SSL_LIBS := -lssl -lcrypto
 endif
 LDFLAGS += $(SSL_LIBS)
 
-prefix = /usr/local
+prefix = /usr
 bindir = $(prefix)/bin
 datadir = $(prefix)/share
 mandir = $(datadir)/man

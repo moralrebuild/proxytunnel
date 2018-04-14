@@ -105,11 +105,11 @@ void proxy_protocol(PTSTREAM *pts) {
 	if (args_info.remproxy_given ) {
 		if( args_info.verbose_flag )
 			message( "\nTunneling to %s (remote proxy)\n", args_info.remproxy_arg );
-		sprintf( buf, "CONNECT %s HTTP/1.1\r\nHost: %s\r\n", args_info.remproxy_arg, args_info.host_arg ? args_info.host_arg : args_info.remproxy_arg );
+		sprintf( buf, "CONNECT %s HTTP/1.1\r\n", args_info.remproxy_arg );
 	} else {
 		if( args_info.verbose_flag )
 			message( "\nTunneling to %s (destination)\n", args_info.dest_arg );
-		sprintf( buf, "CONNECT %s HTTP/1.1\r\nHost: %s\r\n", args_info.dest_arg, args_info.host_arg ? args_info.host_arg : args_info.proxyhost_arg );
+		sprintf( buf, "CONNECT %s HTTP/1.1\r\n", args_info.dest_arg );
 	}
 	
 	if ( args_info.user_given && args_info.pass_given ) {
@@ -126,11 +126,19 @@ void proxy_protocol(PTSTREAM *pts) {
 		}
 	}
 
-	strzcat( buf, "Proxy-Connection: Keep-Alive\r\n");
 	/* Add extra header(s), headers are already \r\n terminated */
 	if ( args_info.header_given )
 		strzcat( buf, "%s", args_info.header_arg );
 
+	strzcat( buf, "Proxy-Connection: keep-alive\r\n");
+	strzcat( buf, "Connection: keep-alive\r\n");
+
+	if (args_info.remproxy_given ) {
+		strzcat( buf, "Host: %s\r\n", args_info.host_arg ? args_info.host_arg : args_info.remproxy_arg );
+	} else {
+		strzcat( buf, "Host: %s\r\n", args_info.host_arg ? args_info.host_arg : args_info.proxyhost_arg );
+	}
+	
 	strzcat( buf, "\r\n" );
 
 
@@ -168,7 +176,7 @@ void proxy_protocol(PTSTREAM *pts) {
 		if ( args_info.remuser_given && args_info.rempass_given )
 			strzcat( buf, "Proxy-Authorization: Basic %s\r\n", basicauth(args_info.remuser_arg, args_info.rempass_arg ));
 
-		strzcat( buf, "Proxy-Connection: Keep-Alive\r\n");
+		strzcat( buf, "Proxy-Connection: keep-alive\r\n");
 
 		/* Add extra header(s), headers are already \r\n terminated */
 		if ( args_info.header_given )

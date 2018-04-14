@@ -1,4 +1,4 @@
-prefix = /usr/local
+prefix = /usr
 datadir = $(prefix)/share
 mandir = $(datadir)/man
 
